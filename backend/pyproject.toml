@@ -1,0 +1,158 @@
+[project]
+name = "hrms-backend"
+version = "0.1.0"
+description = "HRMS Backend - Python domains for AI/ML services"
+authors = [
+    {name = "HRMS Team", email = "team@hrms.com"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+
+dependencies = [
+    # Machine Learning & AI frameworks
+    "torch>=2.1.1",
+    "transformers>=4.35.2",
+    "scikit-learn>=1.3.2",
+    "numpy>=1.25.2",
+    "pandas>=2.1.3",
+    "tensorflow>=2.15.0",
+    
+    # NLP & Text Processing
+    "spacy>=3.7.2",
+    "nltk>=3.8.1",
+    "sentence-transformers>=2.2.2",
+    
+    # Computer Vision
+    "opencv-python>=4.8.1",
+    "Pillow>=10.1.0",
+    
+    # Web framework and API
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    
+    # Database
+    "sqlalchemy>=2.0.23",
+    "asyncpg>=0.29.0",
+    "redis>=5.0.1",
+    
+    # HTTP client & async
+    "httpx>=0.25.2",
+    "aiohttp>=3.9.1",
+    
+    # Monitoring & Logging
+    "structlog>=23.2.0",
+    "prometheus-client>=0.19.0",
+    
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "click>=8.1.7",
+    "tenacity>=8.2.3",
+    
+    # Protocol Buffers
+    "grpcio>=1.59.3",
+    "grpcio-tools>=1.59.3",
+    "protobuf>=4.25.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "black>=23.11.0",
+    "ruff>=0.1.6",
+    "mypy>=1.7.1",
+    "pre-commit>=3.5.0",
+]
+
+test = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.25.2",
+    "factory-boy>=3.3.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1", 
+    "pytest-cov>=4.1.0",
+    "black>=23.11.0",
+    "ruff>=0.1.6",
+    "mypy>=1.7.1",
+    "pre-commit>=3.5.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+no_implicit_reexport = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = [
+    "tests",
+    "domains/*/tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore:function ham_sandwich is deprecated:DeprecationWarning",
+]

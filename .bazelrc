@@ -1,0 +1,71 @@
+# Build configuration for HRMS monorepo
+
+# Import Foundry CI configuration if available
+try-import %workspace%/.bazelrc.ci
+
+# Common build flags
+build --incompatible_enable_cc_toolchain_resolution
+build --symlink_prefix=dist/
+build --verbose_failures
+build --show_result=20
+build --announce_rc
+
+# Test configuration
+test --test_output=errors
+test --test_summary=short
+test --cache_test_results=auto
+
+# Performance settings
+build --experimental_repository_cache_hardlinks
+build --experimental_guard_against_concurrent_changes
+build --watchfs
+
+# Remote caching (uncomment and configure when needed)
+# build --remote_cache=grpc://your-cache-server:9092
+# build --experimental_remote_cache_compression
+
+# Language-specific configurations
+# Go specific (primary backend language)
+build --@io_bazel_rules_go//go/config:pure
+build --@io_bazel_rules_go//go/config:static
+
+# Python specific (AI domain only)
+build --python_top=//tools/python:python_bin
+build --host_python_top=//tools/python:python_bin
+
+# TypeScript/Node.js specific
+build --@build_bazel_rules_nodejs//:node_modules_preserve_symlinks
+
+# Development mode (fast iteration)
+build:dev --compilation_mode=fastbuild
+build:dev --strip=never
+build:dev --copt=-O0
+build:dev --host_copt=-O0
+
+# Production mode (optimized)
+build:prod --compilation_mode=opt
+build:prod --strip=always
+build:prod --copt=-O2
+build:prod --host_copt=-O2
+
+# Debug mode
+build:debug --compilation_mode=dbg
+build:debug --strip=never
+build:debug --copt=-g
+build:debug --host_copt=-g
+
+# Testing configurations
+test:unit --test_tag_filters=-integration,-e2e
+test:integration --test_tag_filters=integration
+test:e2e --test_tag_filters=e2e
+
+# CI specific configurations
+build:ci --loading_phase_threads=1
+build:ci --keep_going
+build:ci --jobs=2
+build:ci --announce_rc
+build:ci --verbose_failures=true
+build:ci --noshow_progress
+
+# User-specific configurations (override above)
+try-import %workspace%/.bazelrc.user

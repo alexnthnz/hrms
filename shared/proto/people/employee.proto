@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package hrms.people;
+
+import "shared/proto/common/common.proto";
+
+option go_package = "github.com/your-org/hrms/shared/proto/people";
+
+// Employee core entity
+message Employee {
+  string id = 1;
+  string employee_number = 2;
+  PersonalInfo personal_info = 3;
+  ContactInfo contact_info = 4;
+  EmploymentInfo employment_info = 5;
+  hrms.common.AuditInfo audit_info = 6;
+}
+
+message PersonalInfo {
+  string first_name = 1;
+  string last_name = 2;
+  string middle_name = 3;
+  string preferred_name = 4;
+  string date_of_birth = 5; // ISO date string
+  string gender = 6;
+  string social_security_number = 7; // encrypted
+}
+
+message ContactInfo {
+  string personal_email = 1;
+  string work_email = 2;
+  string phone_number = 3;
+  Address home_address = 4;
+  Address work_address = 5;
+}
+
+message Address {
+  string street_1 = 1;
+  string street_2 = 2;
+  string city = 3;
+  string state = 4;
+  string postal_code = 5;
+  string country = 6;
+}
+
+message EmploymentInfo {
+  string job_title = 1;
+  string department = 2;
+  string manager_id = 3;
+  string start_date = 4; // ISO date string
+  string end_date = 5; // ISO date string, empty if active
+  EmploymentStatus status = 6;
+  EmploymentType type = 7;
+}
+
+enum EmploymentStatus {
+  EMPLOYMENT_STATUS_UNSPECIFIED = 0;
+  EMPLOYMENT_STATUS_ACTIVE = 1;
+  EMPLOYMENT_STATUS_INACTIVE = 2;
+  EMPLOYMENT_STATUS_TERMINATED = 3;
+  EMPLOYMENT_STATUS_ON_LEAVE = 4;
+}
+
+enum EmploymentType {
+  EMPLOYMENT_TYPE_UNSPECIFIED = 0;
+  EMPLOYMENT_TYPE_FULL_TIME = 1;
+  EMPLOYMENT_TYPE_PART_TIME = 2;
+  EMPLOYMENT_TYPE_CONTRACT = 3;
+  EMPLOYMENT_TYPE_INTERN = 4;
+}
+
+// Service definitions
+service EmployeeService {
+  rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse);
+  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse);
+  rpc UpdateEmployee(UpdateEmployeeRequest) returns (UpdateEmployeeResponse);
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse);
+}
+
+message CreateEmployeeRequest {
+  Employee employee = 1;
+}
+
+message CreateEmployeeResponse {
+  Employee employee = 1;
+}
+
+message GetEmployeeRequest {
+  string id = 1;
+}
+
+message GetEmployeeResponse {
+  Employee employee = 1;
+}
+
+message UpdateEmployeeRequest {
+  Employee employee = 1;
+  repeated string update_mask = 2;
+}
+
+message UpdateEmployeeResponse {
+  Employee employee = 1;
+}
+
+message ListEmployeesRequest {
+  hrms.common.PaginationRequest pagination = 1;
+  string department = 2;
+  EmploymentStatus status = 3;
+}
+
+message ListEmployeesResponse {
+  repeated Employee employees = 1;
+  hrms.common.PaginationResponse pagination = 2;
+}
